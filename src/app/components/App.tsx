@@ -8,9 +8,9 @@ const App = ({}) => {
     parent.postMessage({ pluginMessage: { type: "create-table" } }, "*");
   }, []);
 
-  const onCancel = React.useCallback(() => {
-    parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
-  }, []);
+  //   const onCancel = React.useCallback(() => {
+  //     parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
+  //   }, []);
 
   React.useEffect(() => {
     // This is how we read messages sent from the plugin controller
@@ -31,7 +31,7 @@ const App = ({}) => {
       <button id="update" onClick={onCreate}>
         Update table
       </button>
-      <button onClick={onCancel}>Cancel</button>
+      {/* <button onClick={onCancel}>Cancel</button> */}
     </div>
   );
 };
