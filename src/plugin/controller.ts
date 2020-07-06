@@ -1,4 +1,6 @@
-figma.showUI(__html__);
+import moment from "moment";
+
+figma.showUI(__html__, { width: 320, height: 295 });
 
 figma.ui.onmessage = async msg => {
   if (msg.type === "create-table") {
@@ -31,6 +33,9 @@ figma.ui.onmessage = async msg => {
     // The right hand image
     let imageFrame = figma.createFrame();
 
+    // Timestamp
+    let timestamp = figma.createText();
+
     if (pages.includes("Table of Contents")) {
       // do nothing right now
     } else {
@@ -40,16 +45,17 @@ figma.ui.onmessage = async msg => {
       // Set cover frame properties.
       coverFrame.name = "Table of Contents";
       coverFrame.layoutMode = "HORIZONTAL";
-      coverFrame.resize(960, 540);
-      coverFrame.counterAxisSizingMode = "FIXED";
+      coverFrame.resize(960, 480);
+      coverFrame.counterAxisSizingMode = "AUTO";
       coverFrame.verticalPadding = 0;
       coverFrame.horizontalPadding = 0;
+      coverFrame.cornerRadius = 16;
 
       // Set wrapper frame properties.
       // This wraps the text content.
       wrapperFrame.name = "Wrapper frame";
       wrapperFrame.layoutMode = "VERTICAL";
-      wrapperFrame.resize(480, 540);
+      wrapperFrame.resize(480, 480);
       wrapperFrame.counterAxisSizingMode = "FIXED";
       wrapperFrame.verticalPadding = 32;
       wrapperFrame.horizontalPadding = 32;
@@ -57,12 +63,8 @@ figma.ui.onmessage = async msg => {
 
       // Create the frame for the right side
       imageFrame.name = "Project Image";
-      imageFrame.resize(480, 540);
+      imageFrame.resize(480, 480);
       coverFrame.appendChild(imageFrame);
-
-      function clone(val) {
-        return JSON.parse(JSON.stringify(val));
-      }
 
       const fills = clone(imageFrame.fills);
       fills[0].color.r = 0.9764705896377563;
@@ -99,7 +101,7 @@ figma.ui.onmessage = async msg => {
     let createPageItem = (name: string) => {
       let textFrame = figma.createText();
       textFrame.fontName = { family: "Inter", style: "Regular" };
-      textFrame.characters = name;
+      textFrame.characters = `${name} ->`;
       textFrame.fontSize = 24;
       listFrame.appendChild(textFrame);
     };
@@ -118,14 +120,41 @@ figma.ui.onmessage = async msg => {
       linkListItem.characters = "Example Link";
       linkListItem.fontSize = 20;
       linksFrame.appendChild(linkListItem);
+    };
+
+    let createTimestamp = () => {
+      timestamp.fontName = { family: "Inter", style: "Regular" };
+      timestamp.characters = moment().format("MMMM Do, YYYY");
+      timestamp.fontSize = 16;
+      wrapperFrame.appendChild(timestamp);
 
       // #B2B2B2
-      const fills = clone(linkListItem.fills);
+      const fills = clone(timestamp.fills);
       fills[0].color.r = 0.6980392336845398;
       fills[0].color.b = 0.6980392336845398;
       fills[0].color.g = 0.6980392336845398;
 
-      linksFrame.fills = fills;
+      timestamp.fills = fills;
+    };
+
+    // Updates the height and positions of various layers
+    // depending on if the project is really large or small.
+    let updateHeightandPositions = () => {
+      // If its a small project we want to resize the whole frame
+      // and remove the auto layout so its still our minimum size of 960 by 480.
+      if (wrapperFrame.height <= 480) {
+        coverFrame.counterAxisSizingMode = "FIXED";
+        coverFrame.resize(960, 480);
+        wrapperFrame.layoutMode = "NONE";
+        wrapperFrame.resize(480, 480);
+
+        // Position the timestamp in the bottom corner.
+        timestamp.x = 32;
+        timestamp.y = coverFrame.height - 32 - timestamp.height;
+      }
+
+      // Update the right side to match the height of the content/pages frame.
+      imageFrame.resize(480, wrapperFrame.height);
     };
 
     let run = async pages => {
@@ -136,11 +165,17 @@ figma.ui.onmessage = async msg => {
       createHeader();
       createLinkLabel();
       createAdditionalLink();
+      createTimestamp();
+      updateHeightandPositions();
 
       figma.closePlugin();
     };
 
     run(pages);
+
+    function clone(val) {
+      return JSON.parse(JSON.stringify(val));
+    }
 
     figma.ui.postMessage({
       type: "table-created",

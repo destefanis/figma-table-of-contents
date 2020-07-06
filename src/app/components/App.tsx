@@ -4,13 +4,13 @@ import "../styles/ui.css";
 declare function require(path: string): any;
 
 const App = ({}) => {
-  const onCreate = React.useCallback(() => {
+  const createTable = React.useCallback(() => {
     parent.postMessage({ pluginMessage: { type: "create-table" } }, "*");
   }, []);
 
-  //   const onCancel = React.useCallback(() => {
-  //     parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
-  //   }, []);
+  const createPages = React.useCallback(() => {
+    parent.postMessage({ pluginMessage: { type: "create-pages" } }, "*");
+  }, []);
 
   React.useEffect(() => {
     // This is how we read messages sent from the plugin controller
@@ -23,15 +23,16 @@ const App = ({}) => {
   }, []);
 
   return (
-    <div>
-      <h2>Table of Contents</h2>
-      <button id="create" onClick={onCreate}>
-        Create table
+    <div className="main">
+      <figure className="logo-wrapper">
+        <img src={require("../assets/logo.svg")} />
+      </figure>
+      <button className="button" id="create" onClick={createTable}>
+        Create table of contents
       </button>
-      <button id="update" onClick={onCreate}>
-        Update table
+      <button className="button" id="generate" onClick={createPages}>
+        Generate list of pages
       </button>
-      {/* <button onClick={onCancel}>Cancel</button> */}
     </div>
   );
 };
