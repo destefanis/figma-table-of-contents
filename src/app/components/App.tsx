@@ -1,5 +1,6 @@
 import * as React from "react";
-import "../styles/ui.css";
+import "../styles/figma.ds.css";
+import "../styles/custom-ui.css";
 
 declare function require(path: string): any;
 
@@ -27,10 +28,18 @@ const App = ({}) => {
       <figure className="logo-wrapper">
         <img src={require("../assets/logo.svg")} />
       </figure>
-      <button className="button" id="create" onClick={createTable}>
+      <button
+        className="button button--primary"
+        id="create"
+        onClick={createTable}
+      >
         Create table of contents
       </button>
-      <button className="button" id="generate" onClick={createPages}>
+      <button
+        className="button button--secondary"
+        id="generate"
+        onClick={createPages}
+      >
         Generate list of pages
       </button>
     </div>
