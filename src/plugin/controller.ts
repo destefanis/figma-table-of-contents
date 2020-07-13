@@ -6,6 +6,7 @@ figma.showUI(__html__, { width: 320, height: 262 });
 figma.ui.onmessage = async msg => {
   let pages = [];
   let currentSelection;
+
   // Frame for wrapping the list of pages.
   let listFrame = figma.createFrame();
 
@@ -24,12 +25,21 @@ figma.ui.onmessage = async msg => {
   listFrame.fills = listFills;
 
   // Check whether or not the user has something selected.
+  // Used for where to add pages if that option is selected.
   if (figma.currentPage.selection.length !== 0) {
     currentSelection = figma.currentPage.selection[0];
   } else {
     currentSelection = figma.currentPage;
   }
 
+  // Loop through our documents pages and add them
+  // to our own pages array.
+  figma.root.children.forEach(page => {
+    pages.push(page.name);
+  });
+
+  // Utility function for styling the page names
+  // and adding them to the list frame.
   let createPageItem = (name: string, arrow: boolean) => {
     let textFrame = figma.createText();
     textFrame.fontName = { family: "Inter", style: "Regular" };
@@ -44,20 +54,15 @@ figma.ui.onmessage = async msg => {
     listFrame.appendChild(textFrame);
   };
 
-  figma.root.children.forEach(page => {
-    pages.push(page.name);
-  });
-
-  // For generating just the list of pages.
   if (msg.type === "create-pages") {
-    // Generate the list of pages
-    listFrame.name = "List of Poges";
+    // Styles for the frame that contains our list of pages.
+    listFrame.name = "List of Pages";
     listFrame.layoutMode = "VERTICAL";
     listFrame.counterAxisSizingMode = "AUTO";
     listFrame.verticalPadding = 32;
     listFrame.horizontalPadding = 0;
     listFrame.itemSpacing = 8;
-    // figma.currentPage.appendChild(listFrame);
+
     currentSelection.appendChild(listFrame);
 
     let generateList = async pages => {
@@ -69,9 +74,7 @@ figma.ui.onmessage = async msg => {
     };
 
     generateList(pages);
-  }
-  // When creating an entire table of contents.
-  else if (msg.type === "create-table") {
+  } else if (msg.type === "create-table") {
     // Create table of content page
     let tableOfContents = figma.createPage();
     figma.currentPage = tableOfContents;
@@ -87,6 +90,12 @@ figma.ui.onmessage = async msg => {
 
     // The right hand image
     let imageFrame = figma.createFrame();
+
+    // This wraps the timestamp and "spacer" frame.
+    let timeStampFrame = figma.createFrame();
+
+    // Spacer frame for spacing the timestamp away from the "additional links" section.
+    let spacerFrame = figma.createFrame();
 
     // Timestamp
     let timestamp = figma.createText();
@@ -104,7 +113,7 @@ figma.ui.onmessage = async msg => {
     coverFrame.cornerRadius = 16;
 
     // Set wrapper frame properties.
-    // This wraps the text content.
+    // This wraps all the left hand content (pages, links, name, timestamp).
     wrapperFrame.name = "Wrapper frame";
     wrapperFrame.layoutMode = "VERTICAL";
     wrapperFrame.resize(480, 480);
@@ -118,13 +127,14 @@ figma.ui.onmessage = async msg => {
     imageFrame.resize(480, 480);
     coverFrame.appendChild(imageFrame);
 
+    // Background of the image side of the table of contents.
     const fills = clone(imageFrame.fills);
     fills[0].color.r = 0.9764705896377563;
     fills[0].color.b = 0.9764705896377563;
     fills[0].color.g = 0.9764705896377563;
-
     imageFrame.fills = fills;
 
+    // Set the properties of the list frame that contains our pages.
     listFrame.name = "List of Pages";
     listFrame.layoutMode = "VERTICAL";
     listFrame.counterAxisSizingMode = "AUTO";
@@ -133,6 +143,7 @@ figma.ui.onmessage = async msg => {
     listFrame.itemSpacing = 8;
     wrapperFrame.appendChild(listFrame);
 
+    // Set the properties of the link frame that contains our 'additional links'.
     linksFrame.name = "Additional Links";
     linksFrame.layoutMode = "VERTICAL";
     linksFrame.counterAxisSizingMode = "AUTO";
@@ -140,6 +151,20 @@ figma.ui.onmessage = async msg => {
     linksFrame.horizontalPadding = 0;
     linksFrame.itemSpacing = 8;
     wrapperFrame.appendChild(linksFrame);
+
+    // Set the properties of the timestamp frame that contains our date.
+    timeStampFrame.name = "Timestamp Frame";
+    timeStampFrame.layoutMode = "VERTICAL";
+    timeStampFrame.counterAxisSizingMode = "AUTO";
+    timeStampFrame.verticalPadding = 0;
+    timeStampFrame.horizontalPadding = 0;
+    // 46 + 2px spacer frame for 48px total.
+    timeStampFrame.itemSpacing = 46;
+    wrapperFrame.appendChild(timeStampFrame);
+
+    spacerFrame.name = "Spacer Frame";
+    spacerFrame.resize(100, 2);
+    timeStampFrame.appendChild(spacerFrame);
 
     let createHeader = () => {
       let coverHead = figma.createText();
@@ -169,14 +194,13 @@ figma.ui.onmessage = async msg => {
       timestamp.fontName = { family: "Inter", style: "Regular" };
       timestamp.characters = moment().format("MMMM Do, YYYY");
       timestamp.fontSize = 16;
-      wrapperFrame.appendChild(timestamp);
+      timeStampFrame.appendChild(timestamp);
 
-      // #B2B2B2
+      // Set the timestamp color to #B2B2B2
       const fills = clone(timestamp.fills);
       fills[0].color.r = 0.6980392336845398;
       fills[0].color.b = 0.6980392336845398;
       fills[0].color.g = 0.6980392336845398;
-
       timestamp.fills = fills;
     };
 
@@ -202,6 +226,7 @@ figma.ui.onmessage = async msg => {
 
     let generateTable = async pages => {
       // Using selection and viewport requires an array.
+      // So we can focus and select the table once its generated.
       let layerArray = [];
       layerArray.push(coverFrame);
 
