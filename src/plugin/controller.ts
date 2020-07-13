@@ -6,13 +6,15 @@ figma.showUI(__html__, { width: 320, height: 262 });
 figma.ui.onmessage = async msg => {
   let pages = [];
   let currentSelection;
+  // Set the name of the font you want to use.
+  let fontName = "Inter";
 
   // Frame for wrapping the list of pages.
   let listFrame = figma.createFrame();
 
   // Load our fonts first, load your own brand fonts here.
-  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
-  await figma.loadFontAsync({ family: "Inter", style: "Bold" });
+  await figma.loadFontAsync({ family: fontName, style: "Regular" });
+  await figma.loadFontAsync({ family: fontName, style: "Bold" });
 
   // Utility function for cloning node fills
   function clone(val) {
@@ -168,7 +170,7 @@ figma.ui.onmessage = async msg => {
 
     let createHeader = () => {
       let coverHead = figma.createText();
-      coverHead.fontName = { family: "Inter", style: "Bold" };
+      coverHead.fontName = { family: fontName, style: "Bold" };
       coverHead.characters = figma.root.name;
       coverHead.fontSize = 36;
       wrapperFrame.insertChild(0, coverHead);
@@ -176,7 +178,7 @@ figma.ui.onmessage = async msg => {
 
     let createLinkLabel = () => {
       let linkLabel = figma.createText();
-      linkLabel.fontName = { family: "Inter", style: "Regular" };
+      linkLabel.fontName = { family: fontName, style: "Regular" };
       linkLabel.characters = "Other links";
       linkLabel.fontSize = 16;
       linksFrame.appendChild(linkLabel);
@@ -184,14 +186,14 @@ figma.ui.onmessage = async msg => {
 
     let createAdditionalLink = () => {
       let linkListItem = figma.createText();
-      linkListItem.fontName = { family: "Inter", style: "Regular" };
+      linkListItem.fontName = { family: fontName, style: "Regular" };
       linkListItem.characters = "Example Link";
       linkListItem.fontSize = 20;
       linksFrame.appendChild(linkListItem);
     };
 
     let createTimestamp = () => {
-      timestamp.fontName = { family: "Inter", style: "Regular" };
+      timestamp.fontName = { family: fontName, style: "Regular" };
       timestamp.characters = moment().format("MMMM Do, YYYY");
       timestamp.fontSize = 16;
       timeStampFrame.appendChild(timestamp);
