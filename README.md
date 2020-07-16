@@ -1,18 +1,50 @@
-# Figma Plugin React Template
+# Table of Contents Figma Plugin
 
 ![62862431-71537f00-bd0e-11e9-85db-d97c0fb729a4](https://user-images.githubusercontent.com/16322616/62862692-46b5f600-bd0f-11e9-93b0-75955d1de8f3.png)
 
+Direct people to the pages in your project that matter the most.
 
-This template contains the react example as shown on [Figma Docs](https://www.figma.com/plugin-docs/intro/), with some structural changes and extra tooling.
+This Table of contents plugin for Figma generates a table of contents page and frame for your project. This is intended to:
+* Help non-designers in your organization find the important pages in your file.
+* Provide other designers context with links to important related documents.
+* Help make all of your projects look consistent.
 
-## Quickstart
+This plugin can be adjusted to fit your company's brand and can then be used as an internal plugin for your org.
+
+## Install from the Figma Plugin Page
+Although this plugin is open source, for most users you'll want to install from the Figma plugin community page.
+*Coming soon*
+<!-- [View Plugin Page](https://www.figma.com/c/plugin/801195587640428208) -->
+
+## Use the template instead
+This file is also [published on the Figma community pages](https://www.figma.com/community/file/865646511096801223/Table-of-Contents) if you'd rather just duplicate the design.
+
+## To Run Locally
 * Run `yarn` to install dependencies.
 * Run `yarn build:watch` to start webpack in watch mode.
 * Open `Figma` -> `Plugins` -> `Development` -> `New Plugin...` and choose `manifest.json` file from this repo.
 
-⭐ To change the UI of your plugin (the react code), start editing [App.tsx](./src/app/components/App.tsx).  
-⭐ To interact with the Figma API edit [controller.ts](./src/plugin/controller.ts).  
-⭐ Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
+### To Edit
+What this plugin generates and its appearance can be edited in [controller.ts](./src/plugin/controller.ts).
+The react code, components, and UI can be found here [App.tsx](./src/app/components/App.tsx).  
+Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
+
+### How do I make this match my design brand
+Update the font this plugin uses [here](./src/plugin/controller.ts#L10)
+```javascript
+  // Set the name of the font you want to use.
+  let fontName = "Inter";
+```
+you can also adjust the right hand side color [here](./src/plugin/controller.ts#L137)
+```javascript
+  const fills = clone(imageFrame.fills);
+  fills[0].color.r = 0.9764705896377563;
+  fills[0].color.b = 0.9764705896377563;
+  fills[0].color.g = 0.9764705896377563;
+```
+
+### Large Files
+This plugin doesn't scale very well to very large projects but if this is a common enough request I'll add it in the future!
 
 ## Toolings
 This repo is using:

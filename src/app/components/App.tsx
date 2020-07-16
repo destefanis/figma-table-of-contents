@@ -29,7 +29,7 @@ const App = ({}) => {
         <img src={require("../assets/logo.svg")} />
       </figure>
       <button
-        className="button button--primary"
+        className="button button--secondary"
         id="create"
         onClick={createTable}
       >

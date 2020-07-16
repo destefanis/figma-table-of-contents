@@ -1,6 +1,6 @@
 import * as moment from "moment";
 
-// Set UI height and width
+// Set plugin UI height and width
 figma.showUI(__html__, { width: 320, height: 262 });
 
 figma.ui.onmessage = async msg => {
@@ -44,7 +44,7 @@ figma.ui.onmessage = async msg => {
   // and adding them to the list frame.
   let createPageItem = (name: string, arrow: boolean) => {
     let textFrame = figma.createText();
-    textFrame.fontName = { family: "Inter", style: "Regular" };
+    textFrame.fontName = { family: fontName, style: "Regular" };
     textFrame.fontSize = 24;
 
     if (arrow === true) {
@@ -80,6 +80,9 @@ figma.ui.onmessage = async msg => {
     // Create table of content page
     let tableOfContents = figma.createPage();
     figma.currentPage = tableOfContents;
+
+    let page = figma.currentPage;
+    figma.root.insertChild(0, page);
 
     // The frame for the entire table of contents.
     let coverFrame = figma.createFrame();
@@ -218,8 +221,8 @@ figma.ui.onmessage = async msg => {
         wrapperFrame.resize(480, 480);
 
         // Position the timestamp in the bottom corner.
-        timestamp.x = 32;
-        timestamp.y = coverFrame.height - 32 - timestamp.height;
+        timeStampFrame.x = 32;
+        timeStampFrame.y = coverFrame.height - 32 - timeStampFrame.height;
       }
 
       // Update the right side to match the height of the content/pages frame.
