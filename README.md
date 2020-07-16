@@ -13,8 +13,7 @@ This plugin can be adjusted to fit your company's brand and can then be used as 
 
 ## Install from the Figma Plugin Page
 Although this plugin is open source, for most users you'll want to install from the Figma plugin community page.
-*Coming soon*
-<!-- [View Plugin Page](https://www.figma.com/c/plugin/801195587640428208) -->
+[View Plugin Page](https://www.figma.com/community/plugin/865650075456407958/Table-of-Contents)
 
 ## Use the template instead
 This file is also [published on the Figma community pages](https://www.figma.com/community/file/865646511096801223/Table-of-Contents) if you'd rather just duplicate the design.
