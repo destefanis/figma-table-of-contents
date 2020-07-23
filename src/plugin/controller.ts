@@ -36,9 +36,15 @@ figma.ui.onmessage = async msg => {
 
   // Loop through our documents pages and add them
   // to our own pages array.
-  figma.root.children.forEach(page => {
-    pages.push(page.name);
-  });
+
+  {
+    figma.root.children.forEach(page => {
+      //Exclude pages from the table of contents if they start with these characters.
+      if (!page.name.startsWith("☠") && !page.name.startsWith(".")) {
+        pages.push(page.name);
+      }
+    });
+  }
 
   // Utility function for styling the page names
   // and adding them to the list frame.
