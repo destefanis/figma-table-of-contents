@@ -5,6 +5,7 @@ figma.showUI(__html__, { width: 320, height: 262 });
 
 figma.ui.onmessage = async msg => {
   let pages = [];
+  let pageIds = [];
   let currentSelection;
   // Set the name of the font you want to use.
   let fontName = "Inter";
@@ -38,14 +39,21 @@ figma.ui.onmessage = async msg => {
   // to our own pages array.
   figma.root.children.forEach(page => {
     pages.push(page.name);
+    pageIds.push(page.id);
   });
 
   // Utility function for styling the page names
   // and adding them to the list frame.
-  let createPageItem = (name: string, arrow: boolean) => {
+  let createPageItem = (name: string, id: number, arrow: boolean) => {
     let textFrame = figma.createText();
     textFrame.fontName = { family: fontName, style: "Regular" };
-    textFrame.fontSize = 24;
+    textFrame.hyperlink = { type: "NODE", value: id };
+    textFrame.textDecoration = "UNDERLINE";
+    if (pages.length < 6) {
+      textFrame.fontSize = 24;
+    } else {
+      textFrame.fontSize = 18;
+    }
 
     if (arrow === true) {
       textFrame.characters = `${name} ->`;
@@ -68,8 +76,8 @@ figma.ui.onmessage = async msg => {
     currentSelection.appendChild(listFrame);
 
     let generateList = async pages => {
-      pages.forEach(page => {
-        createPageItem(page, false);
+      pages.forEach((page, index) => {
+        createPageItem(page, pageIds[index], false);
       });
 
       figma.closePlugin();
@@ -175,7 +183,7 @@ figma.ui.onmessage = async msg => {
       let coverHead = figma.createText();
       coverHead.fontName = { family: fontName, style: "Bold" };
       coverHead.characters = figma.root.name;
-      coverHead.fontSize = 36;
+      coverHead.fontSize = 32;
       wrapperFrame.insertChild(0, coverHead);
     };
 
@@ -191,7 +199,13 @@ figma.ui.onmessage = async msg => {
       let linkListItem = figma.createText();
       linkListItem.fontName = { family: fontName, style: "Regular" };
       linkListItem.characters = "Example Link";
-      linkListItem.fontSize = 20;
+
+      if (pages.length < 6) {
+        linkListItem.fontSize = 20;
+      } else {
+        linkListItem.fontSize = 16;
+      }
+
       linksFrame.appendChild(linkListItem);
     };
 
@@ -235,8 +249,8 @@ figma.ui.onmessage = async msg => {
       let layerArray = [];
       layerArray.push(coverFrame);
 
-      pages.forEach(page => {
-        createPageItem(page, true);
+      pages.forEach((page, index) => {
+        createPageItem(page, pageIds[index], true);
       });
 
       createHeader();
